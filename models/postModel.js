@@ -1,24 +1,23 @@
 const {Post, Comment} = require('../database/mongodb')
 
 module.exports = {
-    insertPost: async (title, content, userId) => {
-        console.log("adding Post with userid " + userId)
+    insertPost: async (post) => {
+        console.log("adding Post with userid " + post.userId)
         return await Post.create({
-            Postitle: title,
-            Postcontent: content,
-            UserID: userId
+            Postitle: post.title,
+            Postcontent: post.content,
+            UserID: post.userId
         }).then((document,err ) => {
             if(err) return false;
             return document;
         });
     },
-    updatePost: async (title, content, PostId) => {
-        console.log("making update for..." +PostId)
-        return await Post.findByIdAndUpdate(PostId, {"Postitle": title, "Postcontent": content,}, {useFindAndModify: false, versionKey: false})
+    updatePost: async (postToUpdate) => {
+        return await Post.updateOne({_id: postToUpdate.PostId}, {$set: postToUpdate}, {useFindAndModify: false, versionKey: false})
             .then((document,err ) => {
                 if(err) return false;
-                console.log("made update..." + document)
-                return document._id;
+                console.log(document)
+                return document;
             });
     },
     deletePost: async (PostId) => {

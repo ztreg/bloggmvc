@@ -3,14 +3,26 @@ const postModel = require('../models/postModel');
 
 module.exports = {
     addPost: async (req, res) => {
-        let lastId = await postModel.insertPost(req.body.title, req.body.content, req.params.userId);
+
+        const post = {
+            title: req.body.title,
+            content: req.body.content,
+            userId: req.user.userId
+        }
+        let lastId = await postModel.insertPost(post);
         let status = lastId ? 201 : 500;
         res.status(status).json({lastId});
     },
     updatePost: async (req, res) => {
-        let lastId = await postModel.updatePost(req.body.title, req.body.content, req.params.PostId)
+
+        const postToUpdate = {
+            Postitle: req.body.title,
+            Postcontent: req.body.content,
+            PostId: req.params.postId
+        }
+        let lastId = await postModel.updatePost(postToUpdate)
         let status = lastId ? 201 : 500;
-        res.status(status).json({last_inserted_id: lastId});
+        res.status(status).json({updated_id: lastId});
     },
     deletePost: async (req, res) => {
         let count = await postModel.deletePost(req.params.PostId)
@@ -18,7 +30,6 @@ module.exports = {
         res.status(status).json({removed_count: count});
     },
     getPosts: async (req, res) => {
-        // importera comments med specifikt postid
         res.json(await postModel.getPosts())   
     },
     getPost: async (req, res) => {

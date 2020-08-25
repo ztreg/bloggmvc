@@ -1,27 +1,27 @@
 const {User, Comment, Post} = require('../database/mongodb')
 
 module.exports = {
-    addUser: async (username, password) => {
-        console.log("adding User with title " + username)
+    addUser: async (user) => {
+        console.log("adding User with username " + user.username)
         return await User.create({
-            Username: username,
-            Password: password
+            Username: user.username,
+            Password: user.password
         }).then((document,err ) => {
             if(err) return false;
             return document;
         });
     },
-    updateUser: async (username, password, UserId) => {
-        console.log("making update for..." +UserId)
-        return await User.findByIdAndUpdate(UserId, {"Username": username, "password": password,}, {useFindAndModify: false, versionKey: false})
+    updateUser: async (userToUpdate) => {
+        console.log("making update for: " +userToUpdate.userId)
+        return await User.updateOne({_id: userToUpdate.userId},{ $set: userToUpdate}, {useFindAndModify: false, versionKey: false})
             .then((document,err ) => {
                 if(err) return false;
-                console.log("made update..." + document)
-                return document._id;
+                console.log(document)
+                return document.n;
             });
     },
     deleteUser: async (UserId) => {
-        console.log("removing User with id" + UserId)
+        console.log("trying to remove user with userid " + UserId)
         return await User.deleteOne({_id: UserId})
             .then((document,err ) => {
                 if(err) return false;
@@ -31,8 +31,8 @@ module.exports = {
     getUsers: async() => {
             return await User.find({}, {})
     },
-    getUser: async(UserId) => {
-        return await User.findOne({_id: UserId})
+    getUser: async(Userinfo) => {
+        return await User.findOne(Userinfo)
     },
     getUserComments: async(UserId) => {
         return await Comment.find({UserId: UserId})      

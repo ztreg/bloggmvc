@@ -1,8 +1,9 @@
 const userRouter = require('express').Router();
 const userController = require('../controllers/userController');
+const {authorization} = require('../middlewares/authorization')
+const {checkUserID} = require('../middlewares/authorization')
 
-
-userRouter.delete('/delete/:userId', (req, res) => {
+userRouter.delete('/delete/:userId', authorization, checkUserID, (req, res) => {
 	userController.deleteUser(req, res);
 })
 
@@ -31,8 +32,6 @@ userRouter.post('/add', (req, res) => {
     userController.addUser(req, res);
 });
 
-userRouter.put('/update/:userId', (req, res) => {
-    userController.updateUser(req, res);
-});
+userRouter.patch('/update/:userId', authorization, checkUserID, userController.updateUser)
 
 module.exports = userRouter

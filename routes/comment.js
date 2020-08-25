@@ -1,7 +1,9 @@
 const commentRouter = require('express').Router();
 const commentController = require('../controllers/commentController');
+const {authorization} = require('../middlewares/authorization')
+const {checkCommentUser} = require('../middlewares/authorization')
 
-commentRouter.delete('/delete/:commentId', (req, res) => {
+commentRouter.delete('/delete/:commentId', authorization, checkCommentUser, (req, res) => {
 	commentController.deleteComment(req, res);
 }); 
 
@@ -10,12 +12,12 @@ commentRouter.get('/:commentId', (req, res ) => {
     commentController.getComment(req, res);
 })
 
-commentRouter.post('/add/:postId/:userId', (req, res) => {
+commentRouter.post('/add/:postId/:userId', authorization, (req, res) => {
     console.log('Kom till commentroutern add')
     commentController.addComment(req, res);
 });
 
-commentRouter.put('/update/:commentId', (req, res) => {
+commentRouter.put('/update/:commentId', authorization, checkCommentUser, (req, res) => {
     commentController.updateComment(req, res);
 });
 

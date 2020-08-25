@@ -1,15 +1,10 @@
 const postRouter = require('express').Router();
 const postController = require('../controllers/postController');
+const {authorization} = require('../middlewares/authorization')
+const {checkUserID} = require('../middlewares/authorization')
+const {checkPostUser} = require('../middlewares/authorization')
 
-// const jwt = require("jsonwebtoken");
-// 
-// PostRouter.get('/api/userOrders', (req, res) => {
-// 	console.log('inne i routern')
-//   // executes after authenticateToken
-//   // ...
-// })
-
-postRouter.delete('/delete/:PostId', (req, res) => {
+postRouter.delete('/delete/:PostId', authorization, checkPostUser, (req, res) => {
 	postController.deletePost(req, res);
 }); 
 
@@ -33,14 +28,9 @@ postRouter.get('/:postId', (req, res ) => {
     postController.getPost(req, res);
 })
 
-postRouter.post('/add/:userId?', (req, res) => {
-    console.log('Kom till postroutern add')
-    postController.addPost(req, res);
-});
+postRouter.post('/add', authorization, postController.addPost);
 
-postRouter.put('/update/:PostId', (req, res) => {
-    postController.updatePost(req, res);
-});
+postRouter.patch('/update/:postId', authorization, checkPostUser, postController.updatePost)
 
 
 

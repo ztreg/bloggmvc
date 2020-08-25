@@ -7,14 +7,10 @@ const express = require('express');
 const postRoute = require('./routes/post');
 const commentRoute = require('./routes/comment')
 const userRoute = require('./routes/user')
+const authenticationRoute = require('./routes/authentication')
 
 const app = express();
 const cors = require('cors')
-
-function myMiddleWare(req, res, next) {
-  console.log("middleware")
-  next()
-}
 
 // const frondEnd = require('./routes/frontend');
 
@@ -37,11 +33,7 @@ app.use(cors())
 app.use('/posts', postRoute);
 app.use('/comments', commentRoute);
 app.use('/users', userRoute)
-
-
-// app.use('/bloggComment', comRoute);
-// app.use('/', frondEnd);
-
+app.use('/authentication', authenticationRoute)
 
 app.listen(port, () => {
     console.log(`Listen on ${port}`);

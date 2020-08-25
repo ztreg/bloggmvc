@@ -12,7 +12,7 @@ var PostSchema = new mongoose.Schema(
 {
     Postitle: {
         type: String
-    },
+    },  
     Postcontent: {
         type: String
     },
