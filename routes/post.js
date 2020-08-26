@@ -4,34 +4,21 @@ const {authorization} = require('../middlewares/authorization')
 const {checkUserID} = require('../middlewares/authorization')
 const {checkPostUser} = require('../middlewares/authorization')
 
-postRouter.delete('/delete/:PostId', authorization, checkPostUser, (req, res) => {
-	postController.deletePost(req, res);
-}); 
 
-postRouter.get('/:postId/comments', (req, res) => {
-    console.log('hämta kommentarer för postid' + req.params.postId)
-    postController.getPostComments(req, res)
-})
 
-postRouter.get('/', (req, res ) => {
-    console.log('Kom till postroutern GET ALL')
-    postController.getPosts(req, res);
-})
+postRouter.get('/:postId/comments', postController.getPostComments)
 
-postRouter.get('/:userId/posts', (req, res ) => {
-    console.log('Kom till postroutern GET ALL')
-    postController.getUserPosts(req, res);
-})
+postRouter.get('/', authorization, postController.getPosts)
 
-postRouter.get('/:postId', (req, res ) => {
-    console.log('Kom till postroutern för en post')
-    postController.getPost(req, res);
-})
+postRouter.get('/:userId/posts',  postController.getUserPosts)
+
+postRouter.get('/:postId',  postController.getPost)
 
 postRouter.post('/add', authorization, postController.addPost);
 
-postRouter.patch('/update/:postId', authorization, checkPostUser, postController.updatePost)
+postRouter.delete('/delete/:PostId', authorization, postController.deletePost)
 
+postRouter.patch('/update/:postId', authorization, postController.updatePost)
 
 
 module.exports = postRouter

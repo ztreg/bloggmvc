@@ -1,4 +1,4 @@
-const {Post, Comment} = require('../database/mongodb')
+const {Post, Comment, User} = require('../database/mongodb')
 
 module.exports = {
     insertPost: async (post) => {
@@ -28,8 +28,12 @@ module.exports = {
                 return document.deletedCount;
             });
     },
-    getPosts: async() => {
+    getPosts: async(UserID) => {
+        if(UserID) {
+            return await Post.find({UserID: UserID}, {})
+        } else {
             return await Post.find({}, {})
+        }
     },
     getPost: async(postId) => {
         return await Post.findOne({_id: postId})

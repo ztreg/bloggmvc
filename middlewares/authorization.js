@@ -1,17 +1,13 @@
-const jwt = require('jsonwebtoken')
 require('dotenv').config();
-const secret = process.env.SECRET
-const postModel = require('../models/postModel');
-const commentModel = require('../models/commentModel');
-const e = require('express');
+const { verifyToken } = require('../models/userModel')
+const jwt = require('jsonwebtoken')
 
 module.exports = {
-    authorization: (req,res,next) => {
-        if(!req.headers.authorization) return res.sendStatus(403)
+    authorization: async (req,res,next) => {
+        if(!req.headers.authorization) return res.sendStatus(403).json({msg: "No token was sent ;("})
         const token = req.headers.authorization.replace("Bearer ", "")
         try{
-            const payload = jwt.verify(token, secret)
-            req.user = payload
+            req.user = await verifyToken(token)
             console.log(req.user)
             next()
         }catch(error){
@@ -21,49 +17,5 @@ module.exports = {
                 res.status(403).json({error: error})
             }
         }
-    },
-    checkUserID: (req, res, next) => {
-        console.log(req.user.userId)
-        if(req.user.userId === req.params.userId || req.user.userId === req.body.userId ) {
-            console.log('correct user is making the request')
-            next()
-        } else {
-            console.log('incorrect user is making the request')
-            res.json({msg: 'incorrect user'})
-        }
-        
-    },
-    checkPostUser: async (req, res, next) => {
-        const postUser = await postModel.getPost(req.params.PostId)
-        console.log(postUser)
-        if(postUser) {
-            if(postUser.UserID === req.user.userId) {
-                console.log('correct user is making the request')
-                next()
-            } else {
-                console.log('incorrect user is making the request')
-                res.json({msg: 'incorrect user making edit'})
-            }
-        } else {
-            res.sendStatus(400)
-        }
-
-
-    },
-    checkCommentUser: async (req, res, next) => {
-        const commentUser = await commentModel.get(req.params.commentId)
-        console.log(commentUser)
-        if(commentUser) {
-            if(commentUser.UserID === req.user.userId) {
-                console.log('correct user is making the request')
-                next()
-            } else {
-                console.log('incorrect user is making the request')
-                res.json({msg: 'incorrect user making edit'})
-            }
-        } else {
-            res.sendStatus(400)
-        }
     }
-
 }

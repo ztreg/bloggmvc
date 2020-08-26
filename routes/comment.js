@@ -3,7 +3,7 @@ const commentController = require('../controllers/commentController');
 const {authorization} = require('../middlewares/authorization')
 const {checkCommentUser} = require('../middlewares/authorization')
 
-commentRouter.delete('/delete/:commentId', authorization, checkCommentUser, (req, res) => {
+commentRouter.delete('/delete/:commentId', authorization, (req, res) => {
 	commentController.deleteComment(req, res);
 }); 
 
@@ -17,7 +17,7 @@ commentRouter.post('/add/:postId/:userId', authorization, (req, res) => {
     commentController.addComment(req, res);
 });
 
-commentRouter.put('/update/:commentId', authorization, checkCommentUser, (req, res) => {
+commentRouter.put('/update/:commentId', authorization, (req, res) => {
     commentController.updateComment(req, res);
 });
 

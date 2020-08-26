@@ -52,6 +52,9 @@ var CommentSchema = new mongoose.Schema(
             Password: {
                 type: String
             },
+            Role: {
+                type: String
+            },
         }, 
             {
                 timestamps: true
